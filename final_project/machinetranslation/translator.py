@@ -1,10 +1,9 @@
-from machinetranslation import translator
-from flask import Flask, render_template, request
-import json
-import machinetranslation
+""" Watson translators """
+
 import os
 from ibm_watson import LanguageTranslatorV3
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -19,32 +18,18 @@ language_translator = LanguageTranslatorV3(
 )
 
 language_translator.set_service_url(url)
-
-app = Flask(__name__)
-
-@app.route("/englishToFrench")
-def englishToFrench():
-    textToTranslate = request.args.get('textToTranslate')
-    
+def english_to_french():
+    """ To french traduction """
     french_text = language_translator.translate(
-        text=textToTranslate,
+        text='Hello',
         model_id='en-fr').get_result()
     
     return french_text["translations"][0]["translation"]
-
-@app.route("/frenchToEnglish")
-def frenchToEnglish():
-    textToTranslate = request.args.get('textToTranslate')
+def french_to_english():
+    """ To english traduction """
     english_text = language_translator.translate(
-        text=textToTranslate,
+        text='Bonjour',
         model_id='fr-en').get_result()
     return english_text["translations"][0]["translation"]
-    
 
-@app.route("/")
-def renderIndexPage():
-    # Write the code to render template
-    return render_template("index.html")
-    
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+english_to_french()
